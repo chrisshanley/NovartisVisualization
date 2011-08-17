@@ -1,0 +1,96 @@
+<config>
+    <fonts>
+        <font classname="Helvetica" />
+		<font classname="HelveticaNeue" />
+		<font classname="HelveticaNeueLite" />
+		<font classname="HelveticaNeueBold" />
+		<font classname="HelveticaNeueItalic" />
+		<font classname="HelveticaNeueMedium" />
+		<font classname="HelveticaNeueHeavy" />
+    </fonts>
+    
+	<formats>
+	
+		<format id="post-button" font="HelveticaNeueLite" >
+			<size>22</size>
+			<color>0xffffff</color>
+		</format>
+		<format id="key-button" font="HelveticaNeueLite" >
+			<size>12</size>
+			<color>0x525252</color>
+		</format>
+		
+		<format id="key-copy" font="HelveticaNeue" >
+			<size>12</size>
+			<color>0xffffff</color>
+		</format>
+		<format id="close-button" font="HelveticaNeueLite" >
+			<size>10</size>
+			<color>0xffffff</color>
+		</format>
+		<format id="footer-bold" font="HelveticaNeueBold" >
+			<size>12</size>
+			<color>0x525252</color>
+		</format>
+		<format id="footer-italic" font="HelveticaNeueItalic" >
+			<size>12</size>
+			<color>0x525252</color>
+		</format>
+		
+		<format id="date-format" font="HelveticaNeue" >
+			<size>10</size>
+			<color>0x525252</color>
+		</format>
+		
+		
+		
+		
+		
+		<format id="details" font="HelveticaNeueHeavy" >
+			<size>13</size>
+			<color>0xffffff</color>
+		</format>
+		<format id="details-footer" font="HelveticaNeueMedium" >
+			<size>10</size>
+			<color>0xffffff</color>
+		</format>
+		
+		
+		
+	</formats>
+    
+	<services >
+		<service id="base" url="https://novartisch.brightidea.com/ct/xt_custom_code.bix"/>
+	</services>
+    <categories >
+        <category display="true"    name="brown"   colors="0x9d3d2d,0x6d1b0e" />
+        <category display="true"    name="orange"  colors="0xfe9626,0xf86100" />
+        <category display="true"    name="yellow"  colors="0xfff000,0xffc602" />
+		<category display="false"   name="all"     colors="0x0176ab,0x015678" />
+    </categories>
+	
+	<display>
+		<postbutton  id="post-button"  format="post-button" ><![CDATA[POST IDEA]]></postbutton>
+		<keybutton   id="key-button"   format="key-buttonn" ><![CDATA[Idea Visualization Key +/-]]></keybutton>
+		<closebutton id="close-button" format="close-button"><![CDATA[x close]]></closebutton>
+		<viewButton  id="view-button"  format="close-button"><![CDATA[view »]]></viewButton>
+		<key>
+			<copy format="key-copy"><![CDATA[Each circle represents a<br>submitted idea.]]></copy>
+			<copy format="key-copy"><![CDATA[Larger circles have more<br>comments.]]></copy>
+			<copy format="key-copy"><![CDATA[Click on the circle to view<br>an idea.]]></copy>
+		</key>
+		
+		<categorysearcher format="footer-bold"><![CDATA[Categories:]]></categorysearcher>
+		<datesearcher	  format="footer-bold"><![CDATA[Date Range:]]></datesearcher>
+		<dateslider >
+			<item id="0"><![CDATA[One Week]]></item>
+			<item id="1"><![CDATA[Two Weeks]]></item>
+			<item id="2"><![CDATA[Three Weeks]]></item>
+			<item id="3"><![CDATA[One Month]]></item>
+			<item id="4"><![CDATA[Two Monts]]></item>
+			<item id="5"><![CDATA[Three Months]]></item>
+			<item id="6"><![CDATA[Four Months]]></item>
+		</dateslider>
+	</display>
+	
+</config>
