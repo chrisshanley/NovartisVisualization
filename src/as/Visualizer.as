@@ -36,8 +36,10 @@ package
 		
 		public function Visualizer()
 		{
-			Security.loadPolicyFile( "https://novartisch.brightidea.com/crossdomain.xml" );
+			//Security.loadPolicyFile( "https://novartisch.brightidea.com/crossdomain.xml" );
 			Security.allowDomain( "novartisch.brightidea.com" );
+			Security.allowDomain( "https://novartisch.brightidea.com" );
+			trace( this, " new file  ");
 		}
 		
 		override public function init(info:LoaderInfo):void
@@ -54,15 +56,22 @@ package
 			
 			var formatController:FormatController = FormatController.getInstance();
 			formatController.init( _model.configData.formats );
-			
-			_model.initCategories();
-			_model.createIdeaGroups();
+			_model.addEventListener( Event.COMPLETE, handleServiceReady );
 			_model.removeEventListener( Event.INIT , handleModelInit );
-		 	super.init( _model.loaderInfo );
+			_model.initCategories();
+			_model.requestRecords();
+		}
+		
+		private function handleServiceReady( event:Event ):void
+		{
+			_model.removeEventListener( Event.COMPLETE, handleServiceReady );
+			trace( this, " service ready  " );
+			super.init( _model.loaderInfo );
 		}
 		
 		override public function initView():void
 		{
+			trace( this, "draw " );
 			addEventListener( VisualizerEvent.CATEGORY_SELECTED, handleCategorySelected );
 			_ringView = new RingContainer();
 			addChild( _ringView );

@@ -60,13 +60,13 @@
 	</formats>
     
 	<services >
-		<service id="base" url="https://novartisch.brightidea.com/ct/xt_custom_code.bix"/>
+		<service id="base" url="http://ww2.brightidea.com/ct/xt_custom_code.bix"/>
 	</services>
     <categories >
-        <category display="true"    name="brown"   colors="0x9d3d2d,0x6d1b0e" />
-        <category display="true"    name="orange"  colors="0xfe9626,0xf86100" />
-        <category display="true"    name="yellow"  colors="0xfff000,0xffc602" />
-		<category display="false"   name="all"     colors="0x0176ab,0x015678" />
+        <category display="true"    name="brown"  id="53F9487D-881D-4EF5-A2AB-8E436FA113A8" colors="0x9d3d2d,0x6d1b0e" />
+        <category display="true"    name="orange" id="69504E88-B206-46ED-AB6A-650106A263AD"	colors="0xfe9626,0xf86100" />
+        <category display="true"    name="yellow" id="53F9487D-881D-4EF5-A2AB-8E436FA113C8"	colors="0xfff000,0xffc602" />
+		<category display="false"   name="all"    id=""										colors="0x0176ab,0x015678" />
     </categories>
 	
 	<display>

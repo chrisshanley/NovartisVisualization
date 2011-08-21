@@ -39,8 +39,7 @@ package com.visualizer.views
 			for( i; i < _ideas.length; i ++ )
 			{
 				data = _ideas[ i ];
-				size = ( data.comments / _model.maxActivity ) * Model.maxIdeaRadius;
-			
+				size = ( ( data.comments + 1 ) / ( _model.maxActivity + 1 ) ) * Model.maxIdeaRadius;
 				view = new IdeaView( size, _model.retrieveCategoryByName( data.category ).colors, data.category );
 				view.x = Math.sin( angle  ) * _radius;
 				view.y = Math.cos( angle * -1 ) * _radius;

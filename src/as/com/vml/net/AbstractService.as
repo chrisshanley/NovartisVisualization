@@ -31,14 +31,15 @@ package com.vml.net
 			var parmsDebug:String = "?";
 			if( params )
 			{
+				_request.url += "?"
 				for( var prop:String in params )
 				{
 					_vars[prop] = params[prop];
 					parmsDebug +=  prop +"="+_vars[prop]+ "&";
+					_request.url += prop +"="+_vars[prop]+ "&";				
 				}
-				_request.data = _vars;
 			}
-			
+
 			_loader.load( _request );
 		}
 		

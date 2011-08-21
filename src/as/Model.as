@@ -29,6 +29,7 @@ package
 		
 		private static var _instance:Model;
 		
+		private var _ideas:Array;
 		private var _category:String;
 		private var _maxActivity:Number;
 		private var _categories:Array;
@@ -50,7 +51,7 @@ package
 			for each( child in _configData.categories.children() )
 			{
 				colors = child.@colors.toString().split(",");
-				_categories.push( category = new Category( child.@name, colors, child.@display ) );
+				_categories.push( category = new Category( child.@id, colors, child.@display ) );
 			}
 		}
 		
@@ -59,9 +60,9 @@ package
 		 * Method assuems the ideas come in sorted by date index 0 being earlies cronologically
 		 * 
 		 * */
-		public function createIdeaGroups( debugValue:int = 200 ):void
+		public function createIdeaGroups(  ):void
 		{
-			var dummy:FauxIdeas = new FauxIdeas( debugValue );
+			
 			var group:Array;
 			var ideasInGroup:int;
 			var raduisIncrement:int = ( Model.maxRadius - Model.startRadius ) / Model.totalRings;
@@ -74,14 +75,13 @@ package
 			
 			_ideaGroups = new Array();
 			
-			dummy.dummy.reverse();
-			
+				
 			for( i; i < Model.totalRings -1; i ++ )
 			{
 				removePercent = ( radius / Model.maxRadius ); 
 			
-				ideasInGroup  = Math.ceil( removePercent * dummy.dummy.length );
-				group = dummy.dummy.splice( 0, ideasInGroup ); 		
+				ideasInGroup  = Math.ceil( removePercent * _ideas.length );
+				group = _ideas.splice( 0, ideasInGroup ); 		
 			
 				for each( idea in group )
 				{
@@ -155,16 +155,14 @@ package
 		
 		public function requestRecords():void
 		{
-	
 			const accessor:String = "base"
 			var params:Object = new Object();
 			var url:String = _configData.services.service.(attribute( "id" ) == accessor ).attribute( "url" );
 			var service:AbstractService = new AbstractService();
 			
-			params.c = "05426E0E-535C-44EA-9ED5-5F68838C23B5";
+			params.c = "72692330-542E-49B9-ACCE-FAC0953AE3C1";
 			params.event = "visualization";
-			params.key = "4810CC9BD66A484083A8B8380D7F0C95";
-			
+			params.key = "F78847FE28854688B6C7F9CD79F6691D";		
 			service.addEventListener( Event.COMPLETE, recordRequestComplete );
 			service.loadService( url, params );
 		}
@@ -172,7 +170,20 @@ package
 		private function recordRequestComplete( event:Event ):void
 		{
 			var service:AbstractService = event.target as AbstractService;
-			trace(this, "file loaded ", service.xml );
+			var child:XML;
+			var idea:IdeaData;
+			var i:int = 0;
+			_ideas = new Array();
+			
+			trace( this, service.xml );
+			
+			for each( child in service.xml.children() )
+			{
+				idea = new IdeaData( child.TITLE, i, child.CATEGORY_ID, child.COMMENTS );
+				_ideas.push( idea );
+				i++
+			}
+			createIdeaGroups(  );
 			dispatchEvent( new Event( Event.COMPLETE ) );
 		}
 		
@@ -184,7 +195,6 @@ package
 		
 		private function handleRecordsComplete( event:Event ):void
 		{
-			createIdeaGroups( Math.random() * 150 );
 			dispatchEvent( new  VisualizerEvent( VisualizerEvent.IDEA_DATA_LOADED )  );
 		}
 		

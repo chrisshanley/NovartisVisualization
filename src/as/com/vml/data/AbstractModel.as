@@ -38,7 +38,7 @@ package com.vml.data
 			loader.removeEventListener(Event.COMPLETE, handleInit );
 			_configData = new XML( loader.xml );
 			loader = null;
-			dispatchEvent( new Event( Event.INIT ));
+			dispatchEvent( new Event( Event.INIT ));			
 		}
 		
 		public function get configData():XML
