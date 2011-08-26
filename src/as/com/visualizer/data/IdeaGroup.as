@@ -7,20 +7,25 @@ package com.visualizer.data
 		private var _ideas:Array;
 		private var _radius:int;
 		
-		public function IdeaGroup( ideas:Array , radius:int )
+		public function IdeaGroup( ideas:Array )
 		{
 			_ideas = ideas;
 			_radius = radius;
 		}
 		
-		public function get ideas():Array
+		public function set radius( value:int ):void
 		{
-			return _ideas;
+			_radius = value;
 		}
-		
+	
 		public function get radius():int
 		{
 			return _radius;
+		}
+			
+		public function get ideas():Array
+		{
+			return _ideas;
 		}
 	}
 }

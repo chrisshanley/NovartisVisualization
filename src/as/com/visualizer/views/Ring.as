@@ -35,7 +35,7 @@ package com.visualizer.views
 			var angle:Number = ( _ideas.length > 1 ) ? Math.PI * 0.5 :  Math.PI * Math.random();
 			var size:Number;
 			var data:IdeaData;
-			
+		
 			for( i; i < _ideas.length; i ++ )
 			{
 				data = _ideas[ i ];
@@ -43,6 +43,7 @@ package com.visualizer.views
 				view = new IdeaView( size, _model.retrieveCategoryByName( data.category ).colors, data.category );
 				view.x = Math.sin( angle  ) * _radius;
 				view.y = Math.cos( angle * -1 ) * _radius;
+				view.id = data.id;
 				view.name = this.name + "_item_"+i.toString();
 				angle += anglePer;
 				addChild( view );

@@ -36,10 +36,6 @@ package
 		
 		public function Visualizer()
 		{
-			//Security.loadPolicyFile( "https://novartisch.brightidea.com/crossdomain.xml" );
-			Security.allowDomain( "novartisch.brightidea.com" );
-			Security.allowDomain( "https://novartisch.brightidea.com" );
-			trace( this, " new file  ");
 		}
 		
 		override public function init(info:LoaderInfo):void
@@ -56,7 +52,7 @@ package
 			
 			var formatController:FormatController = FormatController.getInstance();
 			formatController.init( _model.configData.formats );
-			_model.addEventListener( Event.COMPLETE, handleServiceReady );
+			_model.addEventListener( Event.COMPLETE, handleServiceReady )
 			_model.removeEventListener( Event.INIT , handleModelInit );
 			_model.initCategories();
 			_model.requestRecords();
@@ -109,7 +105,7 @@ package
 				_details.close();
 			}
 			
-			_details = new DetailsView();
+			_details = new DetailsView( _model.getIdeaById( view.id ) );
 			_details.init();
 			_details.colors = view.colors;
 			_details.name = view.name;

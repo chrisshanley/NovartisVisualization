@@ -2,6 +2,7 @@ package com.visualizer.views
 {
 	import com.greensock.TweenLite;
 	import com.visualizer.data.Category;
+	import com.visualizer.data.IdeaData;
 	import com.visualizer.events.VisualizerEvent;
 	import com.visualizer.states.DetailsDisplayState;
 	import com.visualizer.ui.ViewButton;
@@ -23,7 +24,8 @@ package com.visualizer.views
 	
 	public class DetailsView extends AbstractView
 	{
-		
+		private static const detailsFormat:String = "details";
+		private static const detailsFooterFormat:String = "details-footer";
 		public static const OVER_STATE:String = "overState";
 		public static const CLICK_STATE:String = "clickState";
 		
@@ -40,13 +42,13 @@ package com.visualizer.views
 		private var _contentContainer:Sprite;
 		private var _state:String;
 		private var _model:Model;
+		private var _ideaData:IdeaData;
 		
-		public function DetailsView()
+		public function DetailsView( ideaData:IdeaData )
 		{
 			super();
 			_model = Model.getInstance();
-			var faux:FakeData = new FakeData();
-			data = faux.data;	
+			_ideaData = ideaData;
 		}
 		
 		override public function init():void
@@ -57,7 +59,7 @@ package com.visualizer.views
 			mouseChildren = false;
 			var textHelper:GlowFilter = new GlowFilter(0x000000, 0.4, 2, 2 );
 			
-			_details = new VMLTextField( _data.details, _data.details.@format );
+			_details = new VMLTextField( _ideaData.idea, DetailsView.detailsFormat );
 			_details.width = 200;
 			_details.wordWrap = true;
 			_details.name = "details"
@@ -75,7 +77,7 @@ package com.visualizer.views
 			_contentContainer.addChild( _viewButton );
 			
 			
-			_footer = new VMLTextField( _data.footer, _data.footer.@format );
+			_footer = new VMLTextField( _ideaData.memeberName, DetailsView.detailsFooterFormat );
 			_footer.x = DetailsView.padding,
 			_footer.y = _viewButton.height + _viewButton.y + DetailsView.padding;
 			_footer.alpha = 0;
@@ -84,7 +86,7 @@ package com.visualizer.views
 			
 			var loader:AbstractDisplayLoader = new AbstractDisplayLoader();
 			loader.addEventListener( Event.COMPLETE, handleImageLoaded );
-			loader.load( _data.@image );
+			//loader.load( _data.@image );
 		}
 		
 		private function handleImageLoaded( event:Event ):void
@@ -158,9 +160,9 @@ package com.visualizer.views
 			}
 		}
 		
-		override public function set data( value:XMLList ):void
+		public function set ideaData( value:IdeaData ):void
 		{
-			_data = value;
+			_ideaData = value;	
 		}
 		
 		private function animateClickState():void
