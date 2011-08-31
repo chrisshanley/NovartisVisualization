@@ -11,7 +11,7 @@ package com.visualizer.views
 	import flash.events.Event;
 	import flash.ui.Keyboard;
 	
-	import org.osmf.metadata.KeyValueFacet;
+
 	
 	public class MainView extends AbstractView
 	{
@@ -67,14 +67,14 @@ package com.visualizer.views
 			_sortView.x = 15;
 			_sortView.y = _footerFill.y + 5;
 			
-			_dateView = new DualDateSlider();
+			_dateView = new DualDateSlider( );
 			
 			addChild( _footerFill );
-			addChild( _keyView );
 			addChild( _postButton );
 			addChild( _keyButton );
 			addChild( _sortView );
 			addChild( _dateView );
+			addChild( _keyView );
 			
 			_dateView.x = stage.stageWidth - ( _dateView.width + 15 );
 			_dateView.y = _footerFill.y + 5;

@@ -1,6 +1,6 @@
 package com.visualizer.data
 {
-	import mx.core.UIComponentDescriptor;
+
 
 	public class Category
 	{

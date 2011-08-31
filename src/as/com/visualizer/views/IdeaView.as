@@ -76,7 +76,8 @@ package com.visualizer.views
 		
 		private function handleMouseOver( event:MouseEvent ):void
 		{
-			dispatchEvent( new VisualizerEvent( VisualizerEvent.IDEA_OVER , true ) );	
+			trace( this, name , " handle over  " );
+ 			dispatchEvent( new VisualizerEvent( VisualizerEvent.IDEA_OVER , true ) );	
 		}
 		
 		private function handleMouseOut( event:MouseEvent ):void
@@ -86,6 +87,7 @@ package com.visualizer.views
 		
 		private function handleMouseClick( event:MouseEvent ):void
 		{
+			trace( this, " click "  );
 			dispatchEvent( new VisualizerEvent( VisualizerEvent.IDEA_CLICK , true ) );
 		}
 		

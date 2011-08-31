@@ -10,7 +10,7 @@ package com.visualizer.views
 	
 	import flash.display.Sprite;
 	
-	import org.osmf.layout.PaddingLayoutFacet;
+
 	
 	public class KeyView extends AbstractView
 	{

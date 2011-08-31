@@ -21,6 +21,7 @@ package
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.system.Security;
+	import flash.text.engine.TabAlignment;
 	import flash.utils.Dictionary;
 	
 	
@@ -61,26 +62,28 @@ package
 		private function handleServiceReady( event:Event ):void
 		{
 			_model.removeEventListener( Event.COMPLETE, handleServiceReady );
-			trace( this, " service ready  " );
 			super.init( _model.loaderInfo );
 		}
 		
 		override public function initView():void
 		{
-			trace( this, "draw " );
-			addEventListener( VisualizerEvent.CATEGORY_SELECTED, handleCategorySelected );
-			_ringView = new RingContainer();
-			addChild( _ringView );
-
-			_mainView = new MainView();
-			addChild( _mainView );
 			
-			_ringView.y = _mainView.footerHeight * -1;
+			addEventListener( VisualizerEvent.CATEGORY_SELECTED, handleCategorySelected );
+			
+			_mainView = new MainView();
+			addChild( _mainView  );
+			
+			_ringView = new RingContainer();
+			_ringView.addEventListener( Event.COMPLETE , handleRingsReady );
+			addChildAt( _ringView , 0);
+
+			_ringView.y = _mainView.footerHeight * -1 - 5;
 			
 			addEventListener( VisualizerEvent.IDEA_CLICK, handleObjectClick );
 			addEventListener( VisualizerEvent.IDEA_OVER, handleObjectOver );
 			addEventListener( VisualizerEvent.IDEA_OUT, handleObjectOut );
 			addEventListener( VisualizerEvent.DATE_SELECTED, handleDateSeleceted );
+			addEventListener( Event.CHANGE, handleDateChange );
 		}
 		
 		private function handleCategorySelected( event:VisualizerEvent ):void
@@ -90,10 +93,11 @@ package
 		
 		private function handleObjectOver( event:VisualizerEvent ):void
 		{
+			event.stopImmediatePropagation();
+			event.stopPropagation();
 			
 			var view:IdeaView  = event.target as IdeaView;
 			var point:Point = new Point( this.x, this.y );	
-			
 			if( _details && view.name == _details.name )
 			{
 				return 
@@ -107,6 +111,7 @@ package
 			
 			_details = new DetailsView( _model.getIdeaById( view.id ) );
 			_details.init();
+			_details.buttonMode = true;
 			_details.colors = view.colors;
 			_details.name = view.name;
 			_details.x = view.localToGlobal( point ).x;
@@ -172,33 +177,54 @@ package
 			
 		}
 		
+		private function handleDateChange( event:Event ):void
+		{
+			event.stopImmediatePropagation();
+			event.stopPropagation();
+			
+			var slider:DualDateSlider =  event.target as DualDateSlider;	
+			var maxDif:Number  = _model.endDate.getTime() - _model.startDate.getTime();
+			var endDate:Date   = new Date();	
+			var startDate:Date = new Date( );
+			startDate.setTime( _model.startDate.getTime() );
+			
+			endDate.setTime( _model.startDate.getTime() + maxDif * slider.rightPercent );
+			startDate.setTime( _model.startDate.getTime() + maxDif * slider.leftPercent )
+			
+
+			slider.dates = [ startDate, endDate ];
+		}
+		
 		private function handleDateSeleceted( event:VisualizerEvent ):void
 		{
 			event.stopImmediatePropagation();
 			event.stopPropagation();
 			
-			var slider:DualDateSlider = event.target as DualDateSlider;	
-			var startDate:Date = new Date( 2011, 4 )
-			var endDate:Date = new Date( );
-			var time:Number =  Date.parse( startDate ) - Date.parse( endDate );
-			var requestedStartDate:Date;
-			var requestedEndDate:Date;
+			var slider:DualDateSlider =  event.target as DualDateSlider;	
+			var maxDif:Number  = _model.endDate.getTime() - _model.startDate.getTime();
+			var endDate:Date   = new Date( );	
+			var startDate:Date = new Date();  
+			endDate.setTime( _model.startDate.getTime() + maxDif * slider.rightPercent );
+			startDate.setTime( _model.startDate.getTime() + maxDif * slider.leftPercent );
 			
-		//	trace( this, 
-			trace( this, slider.leftPercent, slider.rightPercent, time );
+			_model.addEventListener( Event.COMPLETE , handleSetLoaded );
+			_model.requstRecordsByDates( [ startDate, endDate ] );
 		}
 		
-		private function handleIdeasLoaded( event:VisualizerEvent ):void
+		private function handleSetLoaded( event:Event ):void
 		{
-			_model.removeEventListener( VisualizerEvent.IDEA_DATA_LOADED, handleIdeasLoaded );
-			_ringView.addEventListener( Event.COMPLETE , handleRingsReady )
+			_model.removeEventListener( Event.COMPLETE , handleSetLoaded );
 			_ringView.init();
 		}
+		
+	
 		
 		private function handleRingsReady( event:Event ):void
 		{
 			_ringView.removeEventListener( Event.COMPLETE , handleRingsReady );
 			_mainView.enableSlider();
+			
+			trace( this, " rings ready " );
 		}
 		
 	}

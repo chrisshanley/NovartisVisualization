@@ -10,7 +10,7 @@ package com.visualizer.data
 		public function IdeaGroup( ideas:Array )
 		{
 			_ideas = ideas;
-			_radius = radius;
+
 		}
 		
 		public function set radius( value:int ):void

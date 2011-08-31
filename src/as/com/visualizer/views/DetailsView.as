@@ -1,11 +1,13 @@
 package com.visualizer.views
 {
 	import com.greensock.TweenLite;
+	import com.greensock.plugins.DropShadowFilterPlugin;
 	import com.visualizer.data.Category;
 	import com.visualizer.data.IdeaData;
 	import com.visualizer.events.VisualizerEvent;
 	import com.visualizer.states.DetailsDisplayState;
 	import com.visualizer.ui.ViewButton;
+	import com.vml.font.FormatController;
 	import com.vml.net.AbstractDisplayLoader;
 	import com.vml.text.VMLTextField;
 	import com.vml.utils.SpriteFactory;
@@ -17,10 +19,11 @@ package com.visualizer.views
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.filters.DropShadowFilter;
 	import flash.filters.GlowFilter;
 	import flash.geom.Matrix;
 	
-	import org.osmf.net.dynamicstreaming.INetStreamMetrics;
+
 	
 	public class DetailsView extends AbstractView
 	{
@@ -49,17 +52,17 @@ package com.visualizer.views
 			super();
 			_model = Model.getInstance();
 			_ideaData = ideaData;
+			_image = new Sprite();
 		}
 		
 		override public function init():void
 		{
 			_contentContainer = new Sprite();
 			addChild( _contentContainer );
-			mouseEnabled = false;
-			mouseChildren = false;
-			var textHelper:GlowFilter = new GlowFilter(0x000000, 0.4, 2, 2 );
-			
-			_details = new VMLTextField( _ideaData.idea, DetailsView.detailsFormat );
+			var textHelper:GlowFilter = new GlowFilter(0x000000, 0.5, 2, 2 );
+			var textShadow:DropShadowFilter = new DropShadowFilter(1, 200, 0x000000, 0.7, 3,3,0.6 );
+			var category:String  = _model.configData..category.(attribute("id") == _ideaData.category ).@name;
+			_details = new VMLTextField( _ideaData.idea, category );
 			_details.width = 200;
 			_details.wordWrap = true;
 			_details.name = "details"
@@ -69,25 +72,35 @@ package com.visualizer.views
 			
 			_viewButton = new ViewButton();
 			_viewButton.label = _model.configData.display.viewButton;
+			_viewButton.textField.defaultTextFormat = FormatController.getInstance().getFormat( category );
+			_viewButton.label = _model.configData.display.viewButton;
 			_viewButton.x = _details.x + _details.width - ( _viewButton.width );
 			_viewButton.y = _details.y + _details.height +  DetailsView.padding;
 			_viewButton.filters = [ textHelper ];
 			_viewButton.alpha = 0;
+			_viewButton.url = _ideaData.url;
 			_viewButton.visible = false;
 			_contentContainer.addChild( _viewButton );
 			
-			
-			_footer = new VMLTextField( _ideaData.memeberName, DetailsView.detailsFooterFormat );
+		
+			var footerString:String = "Created by " +_ideaData.memeberName + " on " + _ideaData.stringDate + "<br>"+_ideaData.votes +" votes | "+_ideaData.comments+" comments | "+ category;
+			_footer = new VMLTextField( footerString, category );
 			_footer.x = DetailsView.padding,
 			_footer.y = _viewButton.height + _viewButton.y + DetailsView.padding;
 			_footer.alpha = 0;
 			_footer.filters = [ textHelper ];
 			_contentContainer.addChild( _footer );
 			
+			_state = DetailsView.OVER_STATE;
+			
 			var loader:AbstractDisplayLoader = new AbstractDisplayLoader();
 			loader.addEventListener( Event.COMPLETE, handleImageLoaded );
-			//loader.load( _data.@image );
-		}
+			loader.load( _ideaData.imagePath );
+			
+			addEventListener( MouseEvent.CLICK, handleMouseClick );
+			buttonMode = true;
+			trace( this, " added click  " );
+ 		}
 		
 		private function handleImageLoaded( event:Event ):void
 		{
@@ -98,12 +111,23 @@ package com.visualizer.views
 			bm.y = bm.height * -0.5;
 			bm.mask = SpriteFactory.getCircleSprite( bm.height * 0.5, 0 );
 	
-			_image = new Sprite();
+			
 			_image.addChild( SpriteFactory.getCircleSprite(  bm.height * 0.5 + 2, _colors[ 0 ] ) );
 			_image.addChild( bm.mask );
 			_image.addChild( bm )
 			_image.scaleX = _image.scaleY = 0;
 			_contentContainer.addChild( _image );
+			
+			
+		}
+		
+		private function handleMouseClick( event:Event ):void
+		{
+			trace( this, " click , ", _state );
+			if( _state == DetailsView.OVER_STATE )
+			{
+				dispatchEvent( new VisualizerEvent( VisualizerEvent.IDEA_CLICK, true ) );
+			}
 		}
 		
 		private function updateDisplay():void
@@ -143,8 +167,11 @@ package com.visualizer.views
 			_fill.addChild( _fill.mask );
 			_fill.alpha = 0.85;
 			
+			
 			addChildAt( _fill, 0 );
 			updateDisplay();
+			
+		
 		}
 		
 		public function set state( value:String ):void
@@ -155,6 +182,9 @@ package com.visualizer.views
 				case DetailsView.OVER_STATE :
 					break;
 				case DetailsView.CLICK_STATE :
+					trace( this, " removed click " );
+					buttonMode = false;
+					removeEventListener(MouseEvent.CLICK, handleMouseClick );
 					animateClickState();
 					break;
 			}
@@ -225,7 +255,7 @@ final internal class FakeData
 	private  var _data:XMLList;
 	function FakeData()
 	{
-		_data = new XMLList( <details image="/imgs/fpo-face.jpg" url="http://google.com">
+		_data = new XMLList( <details image="http://ww2.brightidea.com/novartis/fpo-face.jpg" url="http://google.com">
 								<details format="details"><![CDATA[The most innovative companies in the world use Brightidea software.]]></details>
 								<footer  format="details-footer"><![CDATA[Submitted Jul 01 by Mark Christensen<br>10 votes  |  55 comments  |  Subcategory]]></footer>
 							</details>);

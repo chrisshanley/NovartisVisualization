@@ -46,8 +46,7 @@ package com.visualizer.views
 		{
 			var button:CategoryButton = event.target as CategoryButton;
 			_model.category = button.category;
-			_current.text = _model.category;
-		
+			_current.text = _model.configData..category.(attribute("id") == _model.category ).@name;
 			dispatchEvent( new VisualizerEvent( VisualizerEvent.CATEGORY_SELECTED, true ) );
 		}
 

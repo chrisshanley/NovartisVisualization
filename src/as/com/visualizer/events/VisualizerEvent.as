@@ -5,7 +5,7 @@ package com.visualizer.events
 	public class VisualizerEvent extends Event
 	{
 		public static const CATEGORY_SELECTED:String = "categorySelected";
-		public static const DATE_SELECTED:String = "dateSelected";
+		public static const DATE_SELECTED:String = "dateSelectedTest";
 		public static const DETAILS_UPDATE:String = "detailsUpdate";
 		
 		public static const IDEA_OVER:String = "ideaOver";

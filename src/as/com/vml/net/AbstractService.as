@@ -4,6 +4,7 @@ package com.vml.net
 	import flash.events.EventDispatcher;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
@@ -20,23 +21,33 @@ package com.vml.net
 			_loader = new URLLoader();
 			_request = new URLRequest();
 			_vars = new URLVariables();
+			
 		}
 		
-		public function loadService( url:String, params:Object = null ):void
+		public function set postVars( value:Object ):void
+		{
+
+			_request.method = URLRequestMethod.POST;
+			var propName:String;
+			
+			for( propName in value )
+			{
+				_vars[ propName ] = value[ propName ];
+			}
+			_request.data = _vars;
+		}
+		
+		public function loadService( url:String, queryString:Object = null ):void
 		{
 			_loader.addEventListener(Event.COMPLETE, handleServiceLoaded );
 			_request.url = url;
-			_request.method = URLRequestMethod.POST;
 			
-			var parmsDebug:String = "?";
-			if( params )
+			if( queryString )
 			{
 				_request.url += "?"
-				for( var prop:String in params )
+				for( var prop:String in queryString )
 				{
-					_vars[prop] = params[prop];
-					parmsDebug +=  prop +"="+_vars[prop]+ "&";
-					_request.url += prop +"="+_vars[prop]+ "&";				
+					_request.url += prop +"="+queryString[prop]+ "&";				
 				}
 			}
 

@@ -50,9 +50,19 @@
 			<size>13</size>
 			<color>0xffffff</color>
 		</format>
-		<format id="details-footer" font="HelveticaNeueMedium" >
+		<format id="brown" font="HelveticaNeueMedium" >
 			<size>10</size>
 			<color>0xffffff</color>
+		</format>
+        
+        <format id="orange" font="HelveticaNeueMedium" >
+			<size>10</size>
+			<color>0xffffff</color>
+		</format>
+        
+        <format id="yellow" font="HelveticaNeueMedium" >
+			<size>10</size>
+			<color>0x000000</color>
 		</format>
 		
 		
@@ -66,7 +76,7 @@
         <category display="true"    name="brown"  id="23DD9C40-134D-4FE5-B29E-BDFF2E959FA0" colors="0x9d3d2d,0x6d1b0e" />
         <category display="true"    name="orange" id="31624683-F7AE-4277-BCF7-42A0A9FC7CE3"	colors="0xfe9626,0xf86100" />
         <category display="true"    name="yellow" id="72692330-542E-49B9-ACCE-FAC0953AE3C1"	colors="0xfff000,0xffc602" />
-		<category display="false"   name="all"    id=""										colors="0x0176ab,0x015678" />
+		<category display="false"   name="all"    id="all"										colors="0x0176ab,0x015678" />
     </categories>
 	
 	<display>

@@ -31,11 +31,28 @@ package com.visualizer.views
 		{
 			var view:IdeaView;
 			var i:int = 0;
-			var anglePer:Number = ( Math.PI  ) / ( _ideas.length - 1 );
-			var angle:Number = ( _ideas.length > 1 ) ? Math.PI * 0.5 :  Math.PI * Math.random();
+			var anglePer:Number = ( Math.PI ) / ( _ideas.length - 1 );
+			var angle:Number = ( _ideas.length > 1 ) ? ( Math.PI * 0.5 ) :  Math.PI * Math.random();
 			var size:Number;
 			var data:IdeaData;
-		
+			
+			
+			var line:Sprite = new Sprite();
+			line.graphics.beginFill( 0x000000, 0);
+			if( _id % 2 == 0 )
+			{
+				line.graphics.lineStyle( 2, 0xe2e2d9, 1 );	
+			}
+			else
+			{
+				line.graphics.lineStyle( 2, 0xe2e2d9 , 0 );				
+			}
+			line.graphics.drawCircle( 0 , 0 , _radius - 0.5 );
+			line.graphics.endFill();
+			line.mouseChildren = line.mouseEnabled = false;
+			
+			
+			
 			for( i; i < _ideas.length; i ++ )
 			{
 				data = _ideas[ i ];
@@ -46,26 +63,16 @@ package com.visualizer.views
 				view.id = data.id;
 				view.name = this.name + "_item_"+i.toString();
 				angle += anglePer;
-				addChild( view );
+				addChildAt( view, 0 );
 				_views.push( view );
 			}
-			
-			graphics.beginFill( 0x000000, 0 );
-			if( _id % 2 == 1 )
-			{
-				graphics.lineStyle( 2, 0xe2e2d9, 1 );	
-			}
-			else
-			{
-				graphics.lineStyle( 2, 0xe2e2d9 , 0 );				
-			}
-			graphics.drawCircle( 0 , 0 , _radius - 0.5 );
-			graphics.endFill();
+			addChildAt( line, 0 );
 		}
 		
 		public function addDate( value:String ):void
 		{
 			var view:Sprite = SpriteFactory.getCircleSprite( 5, 0x525252 );
+			var data:IdeaData = _model.getIdeaById( _views[0].id );
 			var angle:Number = Math.PI;
 			var label:VMLTextField = new VMLTextField( value, Ring.dateFormat );
 		
@@ -84,9 +91,11 @@ package com.visualizer.views
 		public function sort( type:String ):void
 		{
 			var ideaView:IdeaView;
-			var all:String = "all";
+			var all:String = "";
+			trace( this, " check against : ", type );
 			for each( ideaView in _views )
 			{
+				trace( this, ideaView.category );
 				if( ideaView.category != type && type != all )
 				{
 					ideaView.hide();

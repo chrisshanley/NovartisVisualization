@@ -2,6 +2,7 @@ package com.visualizer.views
 {
 	import com.greensock.TweenAlign;
 	import com.greensock.TweenLite;
+	import com.greensock.easing.Back;
 	import com.visualizer.data.IdeaData;
 	import com.visualizer.data.IdeaGroup;
 	import com.vml.utils.SpriteFactory;
@@ -16,13 +17,15 @@ package com.visualizer.views
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
-	import org.osmf.metadata.IFacet;
+
 	
 	public class RingContainer extends AbstractView
 	{
 		private var _displayReady:Boolean;
 		private var _model:Model;
 		private var _rings:Array;
+		private var _bg:Sprite;
+		private var _line:Sprite;
 		
 		public function RingContainer()
 		{
@@ -44,6 +47,7 @@ package com.visualizer.views
 			var i:int = 0;
 			var group:IdeaGroup;
 			
+			
 			if( _rings )
 			{
 				clearRings();
@@ -63,14 +67,20 @@ package com.visualizer.views
 				ring.init();
 				ring.x = stage.stageWidth * 0.5;
 				ring.y = stage.stageHeight;
-				addChild( ring );	
+				addChildAt( ring , 0);	
+			
 				
 				TweenLite.from( ring, time, { rotation:-180, scaleX:0, scaleY:0 , delay:i * delay } );
 				_rings.push( ring );
+				if( _bg )
+				{
+					setChildIndex( _bg , 0 );
+				}
 			}
 						
 			setDates();
 			initTopTen();
+			
 			if( !_displayReady )
 			{
 				TweenLite.delayedCall( time + delay, updateView );	
@@ -82,9 +92,15 @@ package com.visualizer.views
 		
 		private function setDates():void
 		{
-			_rings[0].addDate( "July 1" );
-			_rings[ _rings.length - 1].addDate( "June 1" );
-		
+			if( _rings.length > 1 )
+			{
+				_rings[0].addDate( _model.displayStartDate );
+				_rings[ _rings.length - 1].addDate( _model.displayEndDate );
+			}
+			else
+			{
+				_rings[0].addDate( _model.displayStartDate );
+			}
 		}
 		
 		private function updateView(  ):void
@@ -123,24 +139,24 @@ package com.visualizer.views
 		
 		private function drawBackground():void
 		{
-			var bg:Sprite = this.getChildByName( "bg" ) as Sprite;
-			if( bg )
+			_bg = this.getChildByName( "bg" ) as Sprite;
+			if( _bg )
 			{
-				bg.graphics.clear();
-				removeChild( bg );
-				bg = null;
+				_bg.graphics.clear();
+				removeChild( _bg );
+				_bg= null;
 			}
 	
 			var colors:Array  = [0xebebe8, 0xf7f7ea];
-			var radius:Number =  height * 0.5 - 7;
+			var radius:Number =  Model.maxRadius; //* 0.5 - 7;
 			
-			bg = SpriteFactory.getGradientCircleSprite( radius, colors, 0 );
-			addChildAt( bg, 0 ) as Sprite;
-			bg.name = "bg";
-			bg.x = stage.stageWidth * 0.5;
-			bg.y = stage.stageHeight;
+			_bg = SpriteFactory.getGradientCircleSprite( radius, colors, 0 );
+			addChildAt( _bg, 0 ) as Sprite;
+			_bg.name = "bg";
+			_bg.x = stage.stageWidth * 0.5;
+			_bg.y = stage.stageHeight;
 			
-			TweenLite.from( bg, 1, { scaleX:0, scaleY:0 } );
+			TweenLite.from( _bg, 1, { scaleX:0, scaleY:0 } );
 		}			
 		
 		private function drawLine():void
@@ -157,7 +173,7 @@ package com.visualizer.views
 			var ring:Ring;
 			var indicator:Sprite;
 			line.graphics.lineStyle( 2, 0xe2e2d9 );
-			line.graphics.lineTo(0,   height * 0.5 - 7  );
+			line.graphics.lineTo(0, Model.maxRadius  );
 			line.name = "line";
 			line.x = stage.stageWidth * 0.5;
 			line.y = stage.stageHeight;
@@ -166,7 +182,9 @@ package com.visualizer.views
 			{
 				indicator = SpriteFactory.getCircleSprite( 3, 0xff0000 );
 				indicator.y = ring.radius;
-				indicator.visible = false
+				indicator.visible = false;
+				indicator.mouseChildren = false;
+				indicator.mouseEnabled = false;
 				line.addChild( indicator );
 			}
 			
@@ -244,8 +262,10 @@ package com.visualizer.views
 		public function sort( type:String ):void
 		{
 			var ring:Ring;
+			trace( this, "   --------     sort against type ", type );
 			for each( ring in _rings )
 			{
+				
 				ring.sort( type );
 			}
 		}

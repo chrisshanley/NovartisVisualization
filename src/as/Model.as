@@ -17,7 +17,9 @@ package
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	
-	import org.osmf.layout.AbsoluteLayoutFacet;
+	import flashx.textLayout.events.DamageEvent;
+	
+
 	
 	public class Model extends AbstractModel
 	{
@@ -26,16 +28,26 @@ package
 		public static const minIdeaRadius:int = 2;
 		
 		private static const startRadius:int = 125;
-		private static const maxRadius:int = 500;
+		public static const maxRadius:int = 450;
 		
 		private static var totalRings:int;
 		private static var _instance:Model;
+		
+		
+		private var _requestedDates:Array;
+		private var _startDate:Date;
+		private var _endDate:Date;
+		
+		private var _startDateToString:String;
+		private var _endDateToString:String;
 		
 		private var _ideas:Array;
 		private var _category:String;
 		private var _maxActivity:Number;
 		private var _categories:Array;
 		private var _ideaGroups:Array;
+		private var _display:Array;
+
 		
 		public function Model( key:Key )
 		{
@@ -57,29 +69,36 @@ package
 			}
 		}
 		
-		
 		/**
 		 * Method assuems the ideas come in sorted by date index 0 being earlies cronologically
 		 * 
 		 * */
-		private function createIdeaGroups():void
+		private function createIdeaGroups( a:Array ):void
 		{
-
+			
 			var data:IdeaData;
 			var dayCount:int = 0;
 			var radius:int;
-			var currentDate:Date = _ideas[0].date;
+			var currentDate:Date = a[0].date;
 			var ideas:Array;
-			var index:int = 0;
 			var group:IdeaGroup;
+			var i:int = 0;	
+			var startIndex:int = 0;
+			var endIndex:int = 0;
+			
+			_ideaGroups = null;
 			_ideaGroups = new Array();
-			for each( data in _ideas )
+			
+			for( i; i < a.length; i++ )
 			{
+				data = a[ i ];
 				if( data.date.getTime() > currentDate.getTime() + TimeUtils.getOneDayAsMiliseconds() * 3 )
 				{
-					ideas = _ideas.slice(0, index );
-					index = 0;
+					endIndex = a.indexOf( data );
+					ideas = a.slice( startIndex,  endIndex );
+					startIndex = endIndex;
 					currentDate = data.date;
+				
 					_ideaGroups.push( new IdeaGroup( ideas ) );
 				}
 				
@@ -87,24 +106,20 @@ package
 				{
 					_maxActivity = data.comments;
 				}
-				
-				index++;
 			}
 			
 			var anglePer:Number = Math.PI * 0.5 / _ideaGroups.length;
-			var percent:Number = 1;
-			var i:int = 0;
+			var percent:Number = 0;
 			var radian:Number = 0;
 			
+			i = 1;
 			for each( group in _ideaGroups )
 			{
-				radius = Model.startRadius + Math.sin( radian ) * ( Model.maxRadius - Model.startRadius );
+				percent = i/_ideaGroups.length;
+				radius = Model.startRadius +  percent * ( Model.maxRadius - Model.startRadius );
 				group.radius = radius;	
-				radian += anglePer;
-				//trace( this, radius, ( Model.maxRadius - Model.startRadius ) );
 				i++;
-			}
-			
+			}	
 		}
 		
 		public function retrieveCategoryByName( name:String ):Category
@@ -159,24 +174,40 @@ package
 			_category = value;
 		}
 		
-		
-		
-		
-		
 		public function requestRecords():void
 		{
-			const accessor:String = "base"
-			var params:Object = new Object();
-			var url:String = _configData.services.service.(attribute( "id" ) == accessor ).attribute( "url" );
+			const accessor:String 		= "base"
+			const url:String        	= _configData.services.service.(attribute( "id" ) == accessor ).attribute( "url" );
+			var params:Object     		= new Object();
 			var service:AbstractService = new AbstractService();
 			
-			params.c = "72692330-542E-49B9-ACCE-FAC0953AE3C1";
+			params.c     = "72692330-542E-49B9-ACCE-FAC0953AE3C1";
 			params.event = "visualization";
-			params.key = "F78847FE28854688B6C7F9CD79F6691D";		
-			params.q = "ORDER BY date DESC";
+			params.key   = "F78847FE28854688B6C7F9CD79F6691D";		
+			
+			service.postVars = {q:unescape("ORDER BY date DESC")};
 			service.addEventListener( Event.COMPLETE, recordRequestComplete );
+
 			service.loadService( url, params );
 		}
+		
+		public function requstRecordsByDates( dates:Array ):void
+		{
+			_requestedDates = dates;
+			_display = _ideas.filter( filterByDate );
+			if( _display.length == 0 )
+			{
+				return;
+			}
+			createIdeaGroups( _display );
+			dispatchEvent( new Event( Event.COMPLETE ) );
+		}
+		
+		public function get displayDates( ):Array
+		{
+			return _requestedDates;
+		}
+		
 		
 		private function recordRequestComplete( event:Event ):void
 		{
@@ -188,29 +219,71 @@ package
 			var divisable:int = 10;
 			var radian:Number;
 			
+			_ideas = null;
 			_ideas = new Array();
-					
+			
+			
 			for each( child in service.xml.children() )
 			{
-				idea = new IdeaData( child.TITLE, i, child.CATEGORY_ID, child.MEMBER_NAME, child.COMMENTS, child.DATE );
+				trace( this, child );	
+				idea = new IdeaData( child.TITLE, i, child.CATEGORY_ID, child.MEMBER_NAME, child.COMMENTS, child.DATE, child.URL, child.SCORE );
 				_ideas.push( idea );
 				i++
 			}
-			_ideas.reverse();	
-			createIdeaGroups(  );
+			
+			_ideas = _ideas.sortOn("time", Array.NUMERIC );
+			
+			if( !_startDate )
+			{
+				setAppDates();
+				_requestedDates = [ _startDate, _endDate ];
+				_display = _ideas.filter( filterByDate );
+			}
+			createIdeaGroups( _ideas );
 			dispatchEvent( new Event( Event.COMPLETE ) );
+		}
+		
+		private function setAppDates():void
+		{
+			_startDate = _ideas[0].date;
+			_endDate   = _ideas[ _ideas.length - 1 ].date;
+		}
+			
+		private function filterByDate( item:IdeaData, index:int, array:Array ):Boolean
+		{
+			var startDate:Date = _requestedDates[0];
+			var endDate:Date   = _requestedDates[1];
+			return ( item.date.getTime() >=  startDate.getTime() && item.date.getTime() <= endDate.getTime() ) ? true : false;
 		}
 	
 		
 		
-		public function getRecordsByDate( dateIndex:int ):void
+		public function get display():Array
 		{
-			handleRecordsComplete( null );
+			return _display;
 		}
 		
-		private function handleRecordsComplete( event:Event ):void
+		public function get startDate( ):Date 
 		{
-			dispatchEvent( new  VisualizerEvent( VisualizerEvent.IDEA_DATA_LOADED )  );
+			return _startDate;
+		}
+		
+		public function get endDate( ):Date
+		{
+			return _endDate;
+		}
+		
+		public function get displayEndDate():String
+		{
+			var date:Array = _requestedDates[1].toString().split( " " );
+			return date[1] +" "+date[2]+ " ";
+		}
+		
+		public function get displayStartDate():String
+		{	
+			var date:Array = _requestedDates[0].toString().split( " " );
+		
+			return date[1] +" "+date[2]+ " ";	
 		}
 		
 		public function getIdeaById( value:int ):IdeaData
@@ -229,6 +302,16 @@ package
 			return data;
 		}
 		
+		
+		private function debug( array:Array , prop:String ): void
+		{
+			var idea:IdeaData;
+			for each( idea in array )
+			{
+				trace( this, " debug prop : ", prop, idea[prop] );
+			}
+		}
+		
 	}
 }
 
@@ -239,6 +322,9 @@ final internal class TimeUtils
 	{
 	
 	}
+	
+	
+	
 	public static function getOneDayAsMiliseconds():Number
 	{
 		return 1000 * 60 * 60 * 24;
