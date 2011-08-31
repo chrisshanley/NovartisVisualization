@@ -91,8 +91,7 @@ package com.visualizer.views
 		public function sort( type:String ):void
 		{
 			var ideaView:IdeaView;
-			var all:String = "";
-			trace( this, " check against : ", type );
+			var all:String = "all";
 			for each( ideaView in _views )
 			{
 				trace( this, ideaView.category );

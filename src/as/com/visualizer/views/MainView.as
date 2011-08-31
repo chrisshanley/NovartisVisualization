@@ -23,12 +23,14 @@ package com.visualizer.views
 		private var _keyView:KeyView;
 		private var _footerFill:FootFill;
 		private var _sortView:SortView;
+		private var _summaryView:SummaryView;
 		private var _dateView:DualDateSlider;
 		
 		public function MainView()
 		{
 			super();
 			
+
 			_model = Model.getInstance();
 			
 			addEventListener(Event.ADDED_TO_STAGE, handleOnStage );
@@ -69,13 +71,18 @@ package com.visualizer.views
 			
 			_dateView = new DualDateSlider( );
 			
+			_summaryView = new SummaryView();
+			_summaryView.init();
+			_summaryView.x = 20 + _summaryView.width * 0.5;
+			_summaryView.y = 20;
+			
 			addChild( _footerFill );
 			addChild( _postButton );
 			addChild( _keyButton );
 			addChild( _sortView );
 			addChild( _dateView );
 			addChild( _keyView );
-			
+			addChild( _summaryView );
 			_dateView.x = stage.stageWidth - ( _dateView.width + 15 );
 			_dateView.y = _footerFill.y + 5;
 		}

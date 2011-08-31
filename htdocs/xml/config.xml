@@ -65,6 +65,16 @@
 			<color>0x000000</color>
 		</format>
 		
+		  <format id="summary-value" font="HelveticaNeueLite" >
+			<size>25</size>
+			<color>0xff761e</color>
+		</format>
+		
+		  <format id="summary-property" font="HelveticaNeue" >
+			<size>12</size>
+			<color>0x4e4e4e</color>
+		</format>
+		
 		
 		
 	</formats>
@@ -76,7 +86,7 @@
         <category display="true"    name="brown"  id="23DD9C40-134D-4FE5-B29E-BDFF2E959FA0" colors="0x9d3d2d,0x6d1b0e" />
         <category display="true"    name="orange" id="31624683-F7AE-4277-BCF7-42A0A9FC7CE3"	colors="0xfe9626,0xf86100" />
         <category display="true"    name="yellow" id="72692330-542E-49B9-ACCE-FAC0953AE3C1"	colors="0xfff000,0xffc602" />
-		<category display="false"   name="all"    id="all"										colors="0x0176ab,0x015678" />
+		<category display="false"   name="all"    id="all"									colors="0x0176ab,0x015678" />
     </categories>
 	
 	<display>

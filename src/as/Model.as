@@ -24,8 +24,8 @@ package
 	public class Model extends AbstractModel
 	{
 	
-		public static const maxIdeaRadius:int = 7;
-		public static const minIdeaRadius:int = 2;
+		public static const maxIdeaRadius:int = 10;
+		public static const minIdeaRadius:int = 4;
 		
 		private static const startRadius:int = 125;
 		public static const maxRadius:int = 450;
@@ -224,8 +224,7 @@ package
 			
 			
 			for each( child in service.xml.children() )
-			{
-				trace( this, child );	
+			{	
 				idea = new IdeaData( child.TITLE, i, child.CATEGORY_ID, child.MEMBER_NAME, child.COMMENTS, child.DATE, child.URL, child.SCORE );
 				_ideas.push( idea );
 				i++
@@ -302,6 +301,26 @@ package
 			return data;
 		}
 		
+		public function get ideas():Array
+		{
+			return _ideas;
+		}
+		
+		public function get comments():Number
+		{
+			var comments:int;
+			var idea:IdeaData;
+			for each( idea in _ideas )
+			{
+				comments += idea.comments;
+			}
+			return comments;
+		}
+		
+		public function get users():int
+		{
+			return 435;
+		}
 		
 		private function debug( array:Array , prop:String ): void
 		{

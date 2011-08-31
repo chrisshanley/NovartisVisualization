@@ -26,6 +26,7 @@ package com.visualizer.views
 			var i:int = 0;
 			var button:CategoryButton;
 			
+
 			addChild( label );
 			
 			for each( category in _model.categories )

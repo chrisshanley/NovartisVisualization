@@ -1,5 +1,6 @@
 package
 {
+	import com.greensock.TweenLite;
 	import com.visualizer.data.FauxIdeas;
 	import com.visualizer.data.IdeaData;
 	import com.visualizer.data.IdeaGroup;
@@ -19,6 +20,7 @@ package
 	import flash.display.LoaderInfo;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.filters.DropShadowFilter;
 	import flash.geom.Point;
 	import flash.system.Security;
 	import flash.text.engine.TabAlignment;
@@ -106,7 +108,7 @@ package
 			if( _details )
 			{
 				_details.addEventListener(ViewEvent.ANIMATE_OUT_COMPLETE, handlDetailsClosed );
-				_details.close();
+				TweenLite.delayedCall( 2, _details.close );
 			}
 			
 			_details = new DetailsView( _model.getIdeaById( view.id ) );
@@ -117,7 +119,7 @@ package
 			_details.x = view.localToGlobal( point ).x;
 			_details.y = view.localToGlobal( point ).y;
 			_details.addEventListener(VisualizerEvent.DETAILS_UPDATE, handleUpdateDetailsPosition );
-			
+			_details.filters = [ new DropShadowFilter( 4, 45, 0x000000, 0.4 ) ];
 			var xoffset:Number;
 			var yoffset:Number;
 			if( _details.x + _details.width > stage.stageWidth )
