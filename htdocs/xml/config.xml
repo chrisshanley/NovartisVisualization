@@ -32,6 +32,9 @@
 			<size>12</size>
 			<color>0x525252</color>
 		</format>
+	
+	
+	
 		<format id="footer-italic" font="HelveticaNeueItalic" >
 			<size>12</size>
 			<color>0x525252</color>

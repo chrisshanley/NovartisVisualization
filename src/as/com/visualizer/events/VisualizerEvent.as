@@ -12,6 +12,8 @@ package com.visualizer.events
 		public static const IDEA_OUT:String = "ideaOut";
 		public static const IDEA_CLICK:String = "ideaClick";
 		
+		public static const CLOSE_DETAILS:String = "closeDetails";
+		
 		public static const IDEA_DATA_LOADED:String = "ideaDataLoaded";
 		
 		private var _data:Object;

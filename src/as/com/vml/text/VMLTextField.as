@@ -35,5 +35,10 @@ package com.vml.text
 			mouseEnabled = false;
 			embedFonts = true;
 		}
+		
+		public function get format():TextFormat
+		{
+			return _format;
+		}
 	}
 }

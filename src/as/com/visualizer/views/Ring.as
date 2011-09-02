@@ -39,7 +39,7 @@ package com.visualizer.views
 			
 			var line:Sprite = new Sprite();
 			line.graphics.beginFill( 0x000000, 0);
-			if( _id % 2 == 0 )
+			if( _id % 2 == 0 || _id == 0 || _id == _model.ideaGroups.length -1)
 			{
 				line.graphics.lineStyle( 2, 0xe2e2d9, 1 );	
 			}

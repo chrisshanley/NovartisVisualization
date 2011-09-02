@@ -86,6 +86,7 @@ package
 			addEventListener( VisualizerEvent.IDEA_OUT, handleObjectOut );
 			addEventListener( VisualizerEvent.DATE_SELECTED, handleDateSeleceted );
 			addEventListener( Event.CHANGE, handleDateChange );
+			addEventListener( VisualizerEvent.CLOSE_DETAILS, handleCloseDetails );
 		}
 		
 		private function handleCategorySelected( event:VisualizerEvent ):void
@@ -100,19 +101,28 @@ package
 			
 			var view:IdeaView  = event.target as IdeaView;
 			var point:Point = new Point( this.x, this.y );	
-			if( _details && view.name == _details.name )
-			{
-				return 
-			}
 			
 			if( _details )
 			{
+				trace( this, " backing over same object , ",  _details, _details.active );
+				
+			}
+			if( _details && view.name == _details.name && _details.active )
+			{
+				trace( this, " same name as active variable " );
+				return 
+			}
+			
+			if( _details && _details.active )
+			{
+				_details.active = false;
 				_details.addEventListener(ViewEvent.ANIMATE_OUT_COMPLETE, handlDetailsClosed );
-				TweenLite.delayedCall( 2, _details.close );
+				_details.close();
 			}
 			
 			_details = new DetailsView( _model.getIdeaById( view.id ) );
 			_details.init();
+			_details.active = true;
 			_details.buttonMode = true;
 			_details.colors = view.colors;
 			_details.name = view.name;
@@ -174,9 +184,11 @@ package
 			_details.state = DetailsView.CLICK_STATE;
 		}
 		
-		private function handleCloseOverlay( event:VisualizerEvent ):void
+		private function handleCloseDetails( event:VisualizerEvent ):void
 		{
-			
+			_details.addEventListener(ViewEvent.ANIMATE_OUT_COMPLETE, handlDetailsClosed );
+			_details.active = false;
+			_details.close();
 		}
 		
 		private function handleDateChange( event:Event ):void

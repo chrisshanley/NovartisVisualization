@@ -6,6 +6,8 @@ package com.visualizer.views
 	import com.visualizer.data.IdeaData;
 	import com.visualizer.events.VisualizerEvent;
 	import com.visualizer.states.DetailsDisplayState;
+	import com.visualizer.ui.CloseButton;
+	import com.visualizer.ui.DetailsCloseButton;
 	import com.visualizer.ui.ViewButton;
 	import com.vml.font.FormatController;
 	import com.vml.net.AbstractDisplayLoader;
@@ -35,6 +37,7 @@ package com.visualizer.views
 		private static const padding:int = 10;
 		private static const textWidth:int = 200;
 		
+		private var _closeButton:DetailsCloseButton;
 		private var _image:Sprite;
 		private var _teaser:VMLTextField;
 		private var _details:VMLTextField;
@@ -68,6 +71,8 @@ package com.visualizer.views
 			_details.name = "details"
 			_details.scaleX = _details.scaleY = 0.85;
 			_details.filters = [ textHelper ];
+			_details.mouseEnabled = false;
+			
 			_contentContainer.addChild( _details );
 			
 			_viewButton = new ViewButton();
@@ -90,6 +95,8 @@ package com.visualizer.views
 			_footer.alpha = 0;
 			_footer.filters = [ textHelper ];
 			_contentContainer.addChild( _footer );
+			_contentContainer.mouseChildren = false;
+			_contentContainer.mouseEnabled = false;
 			
 			_state = DetailsView.OVER_STATE;
 			
@@ -97,10 +104,7 @@ package com.visualizer.views
 			loader.addEventListener( Event.COMPLETE, handleImageLoaded );
 			loader.load( _ideaData.imagePath );
 			
-			addEventListener( MouseEvent.CLICK, handleMouseClick );
-			buttonMode = true;
-			trace( this, " added click  " );
- 		}
+		}
 		
 		private function handleImageLoaded( event:Event ):void
 		{
@@ -167,8 +171,16 @@ package com.visualizer.views
 			_fill.addChild( _fill.mask );
 			_fill.alpha = 0.85;
 			
+			var category:String  = _model.configData..category.(attribute("id") == _ideaData.category ).@name;
+			_closeButton = new DetailsCloseButton( _colors[1], category );
+			_closeButton.x = _fill.width;
+			
+			_fill.addEventListener( MouseEvent.CLICK, handleMouseClick );
+			_fill.buttonMode = true;
+			
 			
 			addChildAt( _fill, 0 );
+			addChild( _closeButton );
 			updateDisplay();
 			
 		
@@ -220,9 +232,10 @@ package com.visualizer.views
 		
 		public function onAnimateClick():void
 		{
-			_details.x = _image.width * 0.5 + DetailsView.padding;
-			_fill.width = _details.x + _details.width + DetailsView.padding * 0.5;
-			_viewButton.x = _details.x + _details.width - ( _viewButton.width + DetailsView.padding );
+			_details.x     = _image.width * 0.5 + DetailsView.padding;
+			_fill.width    = _details.x + _details.width + DetailsView.padding * 0.5;
+			_closeButton.x = _fill.width;
+			_viewButton.x  = _details.x + _details.width - ( _viewButton.width + DetailsView.padding );
 			dispatchEvent( new VisualizerEvent( VisualizerEvent.DETAILS_UPDATE ) );
 		}
 		

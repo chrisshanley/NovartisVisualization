@@ -54,13 +54,15 @@ package com.visualizer.ui
 	
 			_rightSlider.x = _track.width - ( _rightSlider.width + 2 );
 	
-			_leftBounds  = new Rectangle( 0, 0, _track.width - ( _leftSlider.width * 2 ), 0 );
-			_rightBounds = new Rectangle( _leftSlider.width, 0, _track.width - ( _rightSlider.width * 2 + 2 ) , 0 );
+			_leftBounds  = new Rectangle( 0, 2, _track.width - ( _leftSlider.width * 2 ), 0 );
+			_rightBounds = new Rectangle( _leftSlider.width, 2, _track.width - ( _rightSlider.width * 2 + 2 ) , 0 );
 		
 			_leftSlider.name = DualDateSlider.left;
 			_rightSlider.name = DualDateSlider.right;
 			addEventListener( Event.ADDED_TO_STAGE, handleOnStage );
 			
+			_leftSlider.y = 2;
+			_rightSlider.y = 2;
 			dates = [ Model.getInstance().startDate, Model.getInstance().endDate ];
 		}
 		

@@ -104,10 +104,11 @@ package com.visualizer.views
 		public function indicate():void
 		{
 			_animating = true;
-			filters = [ new GlowFilter( _colors[1], 1, 10, 10, 2 ) ];
+			filters = [ new GlowFilter( _colors[1], 1, 15, 15, 2, 1 ) ];
+			scaleX = scaleY = 1.4;
 			//_indicator.alpha = 1;
 			//TweenLite.to( _indicator, 0.5, { alpha:0, onComplete:indicateComplete } );
-			TweenLite.to(this, 2, { glowFilter:{blurX:1, blurY:1, alpha:0 } } );
+			TweenLite.to(this, 4, { glowFilter:{blurX:1, blurY:1, alpha:0 }, scaleX:1, scaleY:1 } );
 		}
 		
 		public function get size():Number
